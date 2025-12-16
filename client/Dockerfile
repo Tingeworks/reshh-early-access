@@ -2,6 +2,10 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Accept build arg for API domain
+ARG VITE_API_DOMAIN=https://api.reshh.com
+ENV VITE_API_DOMAIN=$VITE_API_DOMAIN
+
 # Install dependencies
 COPY package.json pnpm-lock.yaml ./
 RUN corepack enable && corepack prepare pnpm@latest --activate

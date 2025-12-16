@@ -38,10 +38,10 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        - VITE_API_DOMAIN=https://api.reshh.com
     environment:
       - NODE_ENV=production
-      # Leave empty to use relative URLs (nginx will proxy /early to API)
-      - VITE_API_DOMAIN=https://api.reshh.com
     ports:
       - "3000:3000"
     depends_on:
