@@ -34,9 +34,9 @@ services:
       postgres:
         condition: service_healthy
 
-  web:
+  client:
     build:
-      context: ./web
+      context: ./client
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
