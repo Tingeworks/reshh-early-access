@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=indb
+      - POSTGRES_PASSWORD=indb
+      - POSTGRES_DB=indb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U indb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./api
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=indb
+      - DATABASE_PASSWORD=indb
+      - DATABASE_NAME=indb
+      - DATABASE_SYNCHRONIZE=true
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+    environment:
+      - NODE_ENV=production
+      # Adjust or use in your frontend as needed
+      - VITE_API_URL=http://localhost:4000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+
+
