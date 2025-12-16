@@ -16,18 +16,17 @@ FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Install dependencies for preview (need vite)
+# Install dependencies (need all deps for Nitro server)
 COPY package.json pnpm-lock.yaml ./
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install --frozen-lockfile
 
-# Copy built assets from builder (TanStack Start outputs to .output, standard Vite to dist)
+# Copy built assets from builder (TanStack Start with Nitro outputs to .output)
 COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-# Use preview server for production
-CMD ["sh", "-c", "pnpm preview --host 0.0.0.0 --port 3000"]
+# Run Nitro production server (TanStack Start uses Nitro)
+CMD ["sh", "-c", "node .output/server/index.mjs"]
 
 
