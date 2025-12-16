@@ -7,11 +7,13 @@ export const Route = createFileRoute("/")({ component: App });
 function App() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError("");
 
     try {
       const apiDomain = import.meta.env.VITE_API_DOMAIN || "";
@@ -24,13 +26,19 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit email");
+        if (response.status === 409) {
+          setError("This email is already registered. You're already on the list!");
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
+        return;
       }
 
       // Navigate to done page on success
       navigate({ to: "/done" });
     } catch (error) {
       console.error("Error submitting email:", error);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -49,7 +57,10 @@ function App() {
                 type="email"
                 placeholder="someone@company.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError("");
+                }}
                 required
                 className="bg-white dark:bg-white px-4 py-6"
               />
@@ -61,6 +72,11 @@ function App() {
                 {isSubmitting ? "Submitting..." : "Join"}
               </Button>
             </div>
+            {error && (
+              <p className="text-sm text-red-600 dark:text-red-400 mt-2 px-2">
+                {error}
+              </p>
+            )}
           </form>
         </div>
       </div>
