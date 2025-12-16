@@ -40,8 +40,8 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
-      # Adjust or use in your frontend as needed
-      - VITE_API_URL=http://localhost:4000
+      # Leave empty to use relative URLs (nginx will proxy /early to API)
+      - VITE_API_DOMAIN=https://api.reshh.com
     ports:
       - "3000:3000"
     depends_on:

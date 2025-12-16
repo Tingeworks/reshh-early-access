@@ -9,6 +9,7 @@ import { nitro } from 'nitro/vite'
 const config = defineConfig({
   plugins: [
     devtools(),
+    // Configure Nitro to disable dev middleware that causes fetch errors
     nitro(),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
@@ -18,6 +19,11 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+    strictPort: true,
+  },
 })
 
 export default config
