@@ -26,6 +26,9 @@ RUN pnpm install --prod
 
 COPY --from=builder /app/dist ./dist
 
+# Copy email template files
+COPY public/email ./public/email
+
 EXPOSE 4000
 
 CMD ["pnpm", "start:prod"]

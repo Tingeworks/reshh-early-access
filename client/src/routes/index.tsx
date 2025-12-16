@@ -1,13 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-
 export const Route = createFileRoute("/")({ component: App });
 
 function App() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +27,8 @@ function App() {
         throw new Error("Failed to submit email");
       }
 
-      // Reset form on success
-      setEmail("");
+      // Navigate to done page on success
+      navigate({ to: "/done" });
     } catch (error) {
       console.error("Error submitting email:", error);
     } finally {
@@ -51,7 +51,7 @@ function App() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-white px-4 py-6"
+                className="bg-white dark:bg-white px-4 py-6"
               />
               <Button
                 type="submit"
@@ -64,7 +64,8 @@ function App() {
           </form>
         </div>
       </div>
-      <footer className="w-full py-6 text-center text-sm text-muted-foreground">
+      <footer className="w-full py-6 text-center text-sm text-muted-foreground flex flex-col items-center ">
+        <img src="/favicon.svg" height={45} width={45} />
         <p>© 2024 Reshh. All rights reserved.</p>
       </footer>
     </div>
